@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Define the character encoding and viewport settings for mobile responsiveness -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Title of the webpage -->
+    <title>Sohaib's DashLinks</title>
+    
+    <!-- Style section for custom CSS -->
+    <style>
+        /* Set the background and font styles for the body */
+        body {
+            background: radial-gradient(circle, #134e0d, #100f53);
+            font-family: "Courier New", Courier, monospace;
+            color: #ebe0df;
+        }
+
+        /* Center the content and adjust the container width */
+        .container {
+            width: 90%;
+            margin: auto;
+            text-align: center;
+        }
+
+        /* Style for the main heading (h1) */
+        h1 {
+            color: #b7c7e7;
+            background-color: #212534;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        /* Flexbox to arrange bookmarks */
+        .bookmarks {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Style for each individual bookmark */
+        .bookmark {
+            background-color: #3a3f56;
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin: 10px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.5s ease;
+        }
+
+        /* Hover effect for bookmarks */
+        .bookmark:hover {
+            background-color: #6e73a2;
+        }
+
+        /* Margin and layout for action buttons */
+        .actions {
+            margin-top: 20px;
+        }
+
+        /* Styling the action buttons */
+        .actions button {
+            margin: 5px;
+            padding: 10px;
+            background-color: #3a3f56;
+            color: white;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Hover effect for action buttons */
+        .actions button:hover {
+            background-color: #6e73a2;
+        }
+
+        /* Modal styles for the pop-up windows */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Styling for the content inside modals */
+        .modal-content {
+            background-color: #212534;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        /* Close button for the modals */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        /* Close button hover effect */
+        .close:hover,
+        .close:focus {
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Styles for input fields and buttons in the modals */
+        .modal input, .modal button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main container for the content -->
+    <div class="container">
+        <!-- Page heading -->
+        <h1>Sohaib's DashLinks</h1>
+
+        <!-- Bookmark section: dynamically displays bookmarks by categories -->
+        <div class="bookmarks">
+            {% for category in bookmarks %}
+            <div class="category">
+                <h2>{{ category }}</h2>
+                <div class="bookmarks">
+                    {% for link in bookmarks[category] %}
+                    <!-- Create a clickable link for each bookmark -->
+                    <a class="bookmark" href="{{ link.link }}" target="_blank">{{ link.name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Action buttons to add, edit, or delete categories and bookmarks -->
+        <div class="actions">
+            <button id="addCategoryBtn">Add Category</button>
+            <button id="addBookmarkBtn">Add Bookmark</button>
+            <button id="editBookmarkBtn">Edit Bookmark</button>
+            <button id="deleteBookmarkBtn">Delete Bookmark</button>
+        </div>
+
+        <!-- Add Category Modal: pop-up form to add a new category -->
+        <div id="addCategoryModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeAddCategoryModal">&times;</span>
+                <h3>Add New Category</h3>
+                <form action="/add_category" method="POST">
+                    <!-- Input field for the category name -->
+                    <input type="text" name="category" placeholder="Category Name" required>
+                    <button type="submit">Add</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add Bookmark Modal: pop-up form to add a new bookmark -->
+        <div id="addBookmarkModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeAddModal">&times;</span>
+                <h3>Add New Bookmark</h3>
+                <form action="/add" method="POST">
+                    <!-- Input fields for the category, bookmark name, and link -->
+                    <input type="text" name="category" placeholder="Category" required>
+                    <input type="text" name="name" placeholder="Bookmark Name" required>
+                    <input type="text" name="link" placeholder="Bookmark Link" required>
+                    <button type="submit">Add</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Edit Bookmark Modal: pop-up form to edit an existing bookmark -->
+        <div id="editBookmarkModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeEditModal">&times;</span>
+                <h3>Edit Bookmark</h3>
+                <form action="/edit" method="POST">
+                    <!-- Dropdowns to select a category and bookmark for editing -->
+                    <select name="category" id="editCategory" required>
+                        <option value="" disabled selected>Select Category</option>
+                        {% for category in bookmarks %}
+                        <option value="{{ category }}">{{ category }}</option>
+                        {% endfor %}
+                    </select>
+                    <select name="old_name" id="editBookmark" required>
+                        <option value="" disabled selected>Select Bookmark</option>
+                    </select>
+                    <!-- Input fields for the new bookmark name and link -->
+                    <input type="text" name="new_name" placeholder="New Bookmark Name" required>
+                    <input type="text" name="new_link" placeholder="New Bookmark Link" required>
+                    <button type="submit">Edit</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Delete Bookmark Modal: pop-up form to delete an existing bookmark -->
+        <div id="deleteBookmarkModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeDeleteModal">&times;</span>
+                <h3>Delete Bookmark</h3>
+                <form action="/delete" method="POST">
+                    <!-- Dropdowns to select a category and bookmark for deletion -->
+                    <select name="category" id="deleteCategory" required>
+                        <option value="" disabled selected>Select Category</option>
+                        {% for category in bookmarks %}
+                        <option value="{{ category }}">{{ category }}</option>
+                        {% endfor %}
+                    </select>
+                    <select name="name" id="deleteBookmark" required>
+                        <option value="" disabled selected>Select Bookmark</option>
+                    </select>
+                    <button type="submit">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script to handle the modals (opening, closing, and dynamic content) -->
+    <script>
+        // Get modal elements by ID
+        const addCategoryModal = document.getElementById('addCategoryModal');
+        const addBookmarkModal = document.getElementById('addBookmarkModal');
+        const editBookmarkModal = document.getElementById('editBookmarkModal');
+        const deleteBookmarkModal = document.getElementById('deleteBookmarkModal');
+
+        // Get buttons that trigger the modals
+        const addCategoryBtn = document.getElementById('addCategoryBtn');
+        const addBookmarkBtn = document.getElementById('addBookmarkBtn');
+        const editBookmarkBtn = document.getElementById('editBookmarkBtn');
+        const deleteBookmarkBtn = document.getElementById('deleteBookmarkBtn');
+
+        // Get the close buttons within each modal
+        const closeAddCategoryModal = document.getElementById('closeAddCategoryModal');
+        const closeAddModal = document.getElementById('closeAddModal');
+        const closeEditModal = document.getElementById('closeEditModal');
+        const closeDeleteModal = document.getElementById('closeDeleteModal');
+
+        // Open each modal when the corresponding button is clicked
+        addCategoryBtn.onclick = function() {
+            addCategoryModal.style.display = 'flex';
+        }
+        addBookmarkBtn.onclick = function() {
+            addBookmarkModal.style.display = 'flex';
+        }
+        editBookmarkBtn.onclick = function() {
+            editBookmarkModal.style.display = 'flex';
+        }
+        deleteBookmarkBtn.onclick = function() {
+            deleteBookmarkModal.style.display = 'flex';
+        }
+
+        // Close the modals when the close button is clicked
+        closeAddCategoryModal.onclick = function() {
+            addCategoryModal.style.display = 'none';
+        }
+        closeAddModal.onclick = function() {
+            addBookmarkModal.style.display = 'none';
+        }
+        closeEditModal.onclick = function() {
+            editBookmarkModal.style.display = 'none';
+        }
+        closeDeleteModal.onclick = function() {
+            deleteBookmarkModal.style.display = 'none';
+        }
+
+        // Populate bookmark options dynamically based on selected category
+        document.getElementById('editCategory').addEventListener('change', function() {
+            populateBookmarks(this.value, 'editBookmark');
+        });
+
+        document.getElementById('deleteCategory').addEventListener('change', function() {
+            populateBookmarks(this.value, 'deleteBookmark');
+        });
+
+        // Populate bookmark options based on the category selected
+        function populateBookmarks(category, bookmarkSelectId) {
+            const bookmarkSelect = document.getElementById(bookmarkSelectId);
+            bookmarkSelect.innerHTML = ''; // Clear current options
+            const bookmarks = {{ bookmarks | tojson }}; // Pass bookmarks data from Flask to JS
+            if (category in bookmarks) {
+                bookmarks[category].forEach(function(bookmark) {
+                    const option = document.createElement('option');
+                    option.value = bookmark.name;
+                    option.text = bookmark.name;
+                    bookmarkSelect.add(option);
+                });
+            }
+        }
+
+        // Close modals when clicking outside of the modal content
+        window.onclick = function(event) {
+            if (event.target === addCategoryModal) {
+                addCategoryModal.style.display = 'none';
+            } else if (event.target === addBookmarkModal) {
+                addBookmarkModal.style.display = 'none';
+            } else if (event.target === editBookmarkModal) {
+                editBookmarkModal.style.display = 'none';
+            } else if (event.target === deleteBookmarkModal) {
+                deleteBookmarkModal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
