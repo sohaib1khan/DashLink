@@ -75,3 +75,11 @@ Open your browser and navigate to this URL.
 
 - **Themes/Styling**: You can update the `index.html` file in the `templates` folder to change the look and feel of the dashboard.
 - **Port**: If you'd like to run the app on a different port, update the `PORT` variable in the `run_setup.sh` script.
+
+
+## Demo 
+
+<video width="600" controls>
+  <source src="demo_dash.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
