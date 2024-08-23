@@ -12,9 +12,36 @@
     <style>
         /* Set the background and font styles for the body */
         body {
-            background: radial-gradient(circle, #134e0d, #100f53);
+            background: linear-gradient(135deg, rgba(19,78,13,0.8) 0%, rgba(16,15,83,0.8) 50%, rgba(19,78,13,0.8) 100%);
+            background-blend-mode: overlay;
+            background-size: cover;
+            animation: northern-lights 20s ease-in-out infinite;
             font-family: "Courier New", Courier, monospace;
             color: #ebe0df;
+        }
+        
+        /* Combined keyframes for the northern lights animation effect with color transitions and background position */
+        @keyframes northern-lights {
+            0% {
+                background-position: 0% 50%;
+                background-color: rgba(19,78,13,0.8);
+            }
+            25% {
+                background-position: 50% 50%;
+                background-color: rgba(16,15,83,0.8);
+            }
+            50% {
+                background-position: 100% 50%;
+                background-color: rgba(13,45,80,0.8);
+            }
+            75% {
+                background-position: 50% 50%;
+                background-color: rgba(19,78,13,0.8);
+            }
+            100% {
+                background-position: 0% 50%;
+                background-color: rgba(16,15,83,0.8);
+            }
         }
 
         /* Center the content and adjust the container width */
