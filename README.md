@@ -78,8 +78,4 @@ Open your browser and navigate to this URL.
 
 
 ## Demo 
-
-<video width="600" controls>
-  <source src="demo_dash.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+![Demo of DashLink](demo_dash.gif)
