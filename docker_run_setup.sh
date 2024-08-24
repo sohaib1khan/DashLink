@@ -56,6 +56,7 @@ services:
     environment:
       - FLASK_ENV=development
     command: flask run --host=0.0.0.0 --port=$PORT
+    restart: always
 EOF
   echo "docker-compose.yml created."
 fi
